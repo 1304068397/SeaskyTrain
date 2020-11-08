@@ -1,9 +1,0 @@
-.idea
-target
-*.iml
-logs
-temp
-Generator.java
-.DS_Store
-package-lock.json
-gulp/node_modules

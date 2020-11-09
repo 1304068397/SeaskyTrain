@@ -22,7 +22,7 @@
 2. 整合mybatisPlus，shiro,swagger,redis
 
 **未解决：**
-1. javax校验未生效
+1. javax校验未生效  已解决
 2. shiro  
-    1） /**不生效 
+    1） /**问题
     2） 没有从配置文件读取  已解决

@@ -2,11 +2,8 @@ package com.king.train.service.serviceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.injector.methods.SelectPage;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.king.train.config.JavaxGroup.Update;
 import com.king.train.dao.UserMapper;
 import com.king.train.entities.CommonResult;
 import com.king.train.entities.TbUser;
@@ -16,18 +13,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +41,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, TbUser> implements 
     RedisTemplate<String, String> redisTemplate;
 
     @Override
-    @Validated({Update.class})
     public CommonResult saveOrUpdateUser(TbUser param) {
         //校验 ： 用户名唯一
         List<TbUser> list = list(new QueryWrapper<>(TbUser.builder().userName(param.getUserName()).build()));

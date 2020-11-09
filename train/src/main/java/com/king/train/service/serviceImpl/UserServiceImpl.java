@@ -1,5 +1,10 @@
 package com.king.train.service.serviceImpl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.injector.methods.SelectPage;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.king.train.config.JavaxGroup.Update;
 import com.king.train.dao.UserMapper;
@@ -11,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +24,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -43,6 +51,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, TbUser> implements 
     @Override
     @Validated({Update.class})
     public CommonResult saveOrUpdateUser(TbUser param) {
+        //校验 ： 用户名唯一
+        List<TbUser> list = list(new QueryWrapper<>(TbUser.builder().userName(param.getUserName()).build()));
+        if (list.size()>1){
+            return new CommonResult(ResponseCode.FAILURE.value(),"用户名不唯一！");
+        }
+        if (list.size()==1){
+            boolean flag = list.get(0).getUserName().equals("当前登录人username");
+            if (!flag){
+                return new CommonResult(ResponseCode.FAILURE.value(),"用户名不唯一！");
+            }
+        }
         saveOrUpdate(param);
         return new CommonResult(ResponseCode.SUCCESS.value(),ResponseCode.SUCCESS.message(),param);
     }
@@ -84,4 +103,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, TbUser> implements 
         redisTemplate.expire(mobile, 60, TimeUnit.SECONDS);
         return new CommonResult(ResponseCode.SUCCESS.value(),ResponseCode.SUCCESS.message(),verificationCode);
     }
+
+    @Override
+    public CommonResult logout() {
+        //登出清除缓存
+        Subject currentUser = SecurityUtils.getSubject();
+        currentUser.logout();
+        return new CommonResult(ResponseCode.SUCCESS.value(),ResponseCode.SUCCESS.message());
+    }
+
+    @Override
+    public CommonResult getCurrentUser() {
+        TbUser user = (TbUser) SecurityUtils.getSubject().getPrincipal();
+        return new CommonResult(ResponseCode.SUCCESS.value(),ResponseCode.SUCCESS.message(),user);
+    }
+
+    @Override
+    public CommonResult selectUserPage(TbUser param) {
+        Page<TbUser> page = new Page<>(param.getPageIndex(), param.getPageSize());
+        Wrapper<TbUser> wrapper = new QueryWrapper<>(param);
+        return new CommonResult(ResponseCode.SUCCESS.value(),ResponseCode.SUCCESS.message(), page(page, wrapper));
+    }
+
 }

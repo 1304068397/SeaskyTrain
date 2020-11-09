@@ -10,8 +10,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -37,9 +39,16 @@ public class TbUser implements Serializable {
     private String userName;
     @ApiModelProperty(value = "密码", example = "123456")
     @NotEmpty(groups = {Update.class},message = "密码不能为空！")
+    @Size(groups = {Update.class},min=6,max = 20)
     private String password;
     @ApiModelProperty(value = "验证码", example = "0cd1")
     @NotEmpty(message = "验证码不能为空！")
     @TableField(exist = false)
     private String verificationCode;
+    @ApiModelProperty(value = "pageIndex", example = "1")
+    @TableField(exist = false)
+    private Integer pageIndex;
+    @ApiModelProperty(value = "pageSize", example = "10")
+    @TableField(exist = false)
+    private Integer pageSize;
 }

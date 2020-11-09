@@ -27,17 +27,20 @@ public class ShiroConfig {
     }
 
     @Bean
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(@Autowired @Lazy DefaultWebSecurityManager securityManager){
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(@Autowired @Lazy DefaultWebSecurityManager securityManager) throws IOException {
         ShiroFilterFactoryBean factory = new ShiroFilterFactoryBean();
         factory.setLoginUrl("/");
         factory.setSecurityManager(securityManager);
 
         //以下内容，实际场景中应从配置文件获得
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
-        filterChainDefinitionMap.put("/doc.html**", "anon");
-        filterChainDefinitionMap.put("/**/login", "anon");
-        filterChainDefinitionMap.put("/**/index", "anon");
-        filterChainDefinitionMap.put("/**/UserCtrl001/**", "authc");
+        //filterChainDefinitionMap.put("/doc.html**", "anon");
+        //filterChainDefinitionMap.put("/**/login", "anon");
+        //filterChainDefinitionMap.put("/**/index", "anon");
+        //filterChainDefinitionMap.put("/**/UserCtrl001/**", "authc");
+        //通过加载properties文件实现
+        Map<String, String> propertyMap = OrderedProperties.from("classpath:shiro.properties").toMap();
+        filterChainDefinitionMap.putAll(propertyMap);
 
         factory.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return factory;

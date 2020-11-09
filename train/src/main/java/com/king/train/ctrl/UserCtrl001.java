@@ -64,7 +64,26 @@ public class UserCtrl001 {
 
     @ApiOperation("获取验证码（60s）")
     @GetMapping("/index")
-    public CommonResult index(@RequestParam(name = "mobile") String mobile){
-        return userService.index(mobile);
+    public CommonResult index(@RequestParam(name = "userName") String userName){
+        return userService.index(userName);
+    }
+
+    @ApiOperation("注销")
+    @PostMapping("/logout")
+    public CommonResult logout(){
+        return userService.logout();
+    }
+
+    @ApiOperation("获取当前登陆人信息")
+    @PostMapping("/getCurrentUser")
+    public CommonResult getCurrentUser(){
+        return userService.getCurrentUser();
+    }
+
+    @ApiOperation("查询列表Page")
+    @PostMapping("/selectUserPage")
+    @CurDataSource(source = DataSourceName.read)
+    public CommonResult selectUserPage(@RequestBody TbUser param){
+        return userService.selectUserPage(param);
     }
 }

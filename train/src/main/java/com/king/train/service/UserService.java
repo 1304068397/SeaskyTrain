@@ -6,6 +6,8 @@ import com.king.train.entities.CommonResult;
 import com.king.train.entities.TbUser;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import javax.validation.Valid;
 
 @Validated
@@ -17,4 +19,10 @@ public interface UserService extends IService<TbUser> {
     CommonResult login(TbUser param, DefaultWebSecurityManager defaultSecurityManager);
 
     CommonResult index(String mobile);
+
+    CommonResult logout();
+
+    CommonResult getCurrentUser();
+
+    CommonResult selectUserPage(TbUser param);
 }

@@ -33,7 +33,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.zip.DataFormatException;
 
 /**
  * @PackageName:com.example.demo.controller
@@ -255,15 +254,6 @@ public class Hello001Ctrl {
                             count.incrementAndGet();
                             allList.addAll(exportOutList);
                         }
-                        if (exportOutList.size()>2){
-                            //数据写到数据库
-                            //int insert = successMapper.insert(JkSuccessPo.builder().name(fileName).detail(JSON.toJSONString(exportOutList)).build());
-                            //System.out.println("成功：：准备写入数据库：："+file.getName()+"，结果："+insert);
-                        }else {
-                            //数据写到数据库
-                            //int insert = failMapper.insert(JkFailPo.builder().name(fileName).detail(JSON.toJSONString(exportOutList)).build());
-                            //System.out.println("失败：：准备写入数据库：："+file.getName()+"，结果："+insert);
-                        }
                         System.out.println("---------->>>>>>>>------->>>>>>>"+fileName+"处理完成！ 剩余"+(allFile.size()-count.get())+"条待处理！");
                     }catch(Exception e){
 
@@ -320,26 +310,28 @@ public class Hello001Ctrl {
 //            throw new DataFormatException("出错啦 "+jsonStr);
         }
         List<String> temp = new ArrayList<>();
-        temp.add(fileName);
-        temp.add("-");
-        lists.add(0, temp);
-//        if (ObjectUtils.isEmpty(lists)){
-//            return new ArrayList<>();
-//        }
-        //构建集合
-        String cjbl = Objects.isNull(items) || Objects.isNull(items.get成绩比例()) ? "":items.get成绩比例();
-        String pscjbl = null;
-        String qmcjbl = null;
-        if (!StringUtils.isEmpty(cjbl)){
-            try {
-                pscjbl = cjbl.substring(cjbl.indexOf("平时成绩")+4, cjbl.indexOf("%")+1);
-                qmcjbl = cjbl.substring(cjbl.indexOf("期末成绩")+4);
-                pscjbl = StringUtils.isEmpty(pscjbl)?"":pscjbl;
-                qmcjbl = StringUtils.isEmpty(qmcjbl)?"":qmcjbl;
-            } catch (Exception e) {
-                throw new DataFormatException(items.get课程号()+"课程号出错");
-            }
+        if(lists.size()>0){
+            temp.add(fileName);
+            temp.add("无数据，错误文件！");
+            lists.add(0, temp);
+        }else {
+            temp.add(fileName);
+            lists.add(0, temp);
         }
+        //构建集合
+//        String cjbl = Objects.isNull(items) || Objects.isNull(items.get成绩比例()) ? "":items.get成绩比例();
+//        String pscjbl = null;
+//        String qmcjbl = null;
+//        if (!StringUtils.isEmpty(cjbl)){
+//            try {
+//                pscjbl = cjbl.substring(cjbl.indexOf("平时成绩")+4, cjbl.indexOf("%")+1);
+//                qmcjbl = cjbl.substring(cjbl.indexOf("期末成绩")+4);
+//                pscjbl = StringUtils.isEmpty(pscjbl)?"":pscjbl;
+//                qmcjbl = StringUtils.isEmpty(qmcjbl)?"":qmcjbl;
+//            } catch (Exception e) {
+//                throw new DataFormatException(items.get课程号()+"课程号出错");
+//            }
+//        }
         for (int i = 0; i < lists.size(); i++) {
             List<String> d = lists.get(i);
             if (d.size()<2){
@@ -366,27 +358,28 @@ public class Hello001Ctrl {
                         .pscj(d.get(2))
                         .qmcj(d.get(3))
                         .zpcj(d.get(4))
-                        .cjzs(items.get成绩制式())
-                        .pscjbl(pscjbl)
-                        .qmcjbl(qmcjbl)
+                        .cjzs("百分制")
+                        .pscjbl("50%")
+                        .qmcjbl("50%")
+                        .sstp(fileName)
                         .build();
                 exportOutList.add(build);
             }
         }
-        ExportOut build1 = ExportOut.builder()
-                .xq("")
-                .kch("")
-                .bh("")
-                .xh("")
-                .xsxm("")
-                .pscj("")
-                .qmcj("")
-                .zpcj("")
-                .cjzs("")
-                .pscjbl("")
-                .qmcjbl("")
-                .build();
-        exportOutList.add(build1);
+//        ExportOut build1 = ExportOut.builder()
+//                .xq("")
+//                .kch("")
+//                .bh("")
+//                .xh("")
+//                .xsxm("")
+//                .pscj("")
+//                .qmcj("")
+//                .zpcj("")
+//                .cjzs("")
+//                .pscjbl("")
+//                .qmcjbl("")
+//                .build();
+//        exportOutList.add(build1);
         return exportOutList;
     }
 }

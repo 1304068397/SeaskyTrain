@@ -50,4 +50,7 @@ public class ExportOut {
 
     @ExcelProperty(value ="期末成绩比例",index = 10)
     private String  qmcjbl;
+
+    @ExcelProperty(value ="所属图片",index = 11)
+    private String  sstp;
 }
